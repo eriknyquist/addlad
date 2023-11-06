@@ -4,11 +4,12 @@ PainStruck - an esoteric programming language
 ``PainStruck`` is an esoteric programming language inspired partially by `Brainf**k <https://en.wikipedia.org/wiki/Brainfuck>`_
 and partially by Chris Domas' `movfuscator <https://github.com/xoreaxeaxeax/movfuscator>`_
 
-``PainStruck`` programs operate on a "memory tape", a fixed-size array of single-byte integers.
+``PainStruck`` programs operate on a "memory tape", a fixed-size array of 8-bit unsigned integers.
 There is only a single operation available in ``PainStruck``, which reads a value from one array
 index (the source index), and adds it to the value stored in another array index (the destination
 index). A single operation consists of an integer (the destination array index, where the
-result will go), a comma, another integer (the source array index), and a semicolon:
+result will go), followed by a comma, followed by another integer (the source array index),
+and finally a semicolon:
 
 .. code::
 
@@ -19,31 +20,44 @@ Practical details
 =================
 
 In order to make "normal" programming activities possible with only a single operation,
-the first 4 array indices (0 through 3) are reserved for special purposes, and are
+6 specific array indices (256 through 261) are reserved for special purposes, and are
 referred to as "registers":
 
-* **array index 0: Output register** Using index 0 as the destination index will write
+* **array index 256: Output register** Using index 0 as the destination index will write
   the value at the source index to stdout. Using index 0 as the source index will result
   in no change to the destination index.
 
-* **array index 1: Input register** Using index 1 as the source index will read
+* **array index 257: Input register** Using index 1 as the source index will read
   1 character from stdin, and then write the read value to the destination index.
   Using index 1 as the destination index will have no effect.
 
-* **array index 2: Instruction pointer increment register** Using index 2 as the
+* **array index 258: Instruction pointer increment register** Using index 2 as the
   destination index will add the value at the source index to the current instruction
-  pointer value. Using index 2 as the source index will result in no change to the
-  destination index.
+  pointer value. If the value at the source index is zero, then the instruction pointer
+  will not be changed and execution will continue normally. Using index 2 as the source
+  index will result in no change to the destination index.
 
-* **array index 3: Instruction pointer decrement register** Using index 3 as the
+* **array index 259: Instruction pointer decrement register** Using index 3 as the
   destination index will subtract the value at the source index from the current
-  instruction pointer value. Using index 3 as the source index will result in no
-  change to the destination index.
+  instruction pointer value. If the value at the source index is zero, then the
+  instruction pointer will not be changed and execution will continue normally. Using
+  index 3 as the source index will result in no change to the destination index.
+
+* **array_index 260: Data pointer configuration register** Using index 4 as the destination
+  index will read the value at the source index and use it as the array index for
+  all subsequent **Pointer access register (index 5)** access. Using index 4 as the
+  source register will add the last written value to the value stored at the source index.
+
+* **array_index 261: Data pointer access register** Using index 5 as the destination
+  index will cause the last value written to the **Pointer configuration register (index 4)**
+  to be used as the destination index instead. Using index 5 as the source index will
+  cause the last value written to the **Pointer configuration register (index 4)**
+  to be used as the source index instead.
 
 In addition to the registers, there are some extra details needed in order to write
 working ``PainStruck`` programs:
 
-* Array index 4 will always contain a value of 1 on program start, and all other
+* Array index 262 will always contain a value of 1 on program start, and all other
   array indices will contain a value of 0.
 
 * All array values (including registers) are 8-bit unsigned integers, so values are
