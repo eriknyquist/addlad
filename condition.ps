@@ -1,0 +1,104 @@
+263,262;    # Index 262 contains '1', copy it to index 263
+263,263;    # Put '2' in index 263, for arithmetic later
+264,263;
+264,264;    # Put '4' in index 264, for arithmetic later
+265,264;
+265,265;    # Put '8' in index 265, for arithmetic later
+266,265;
+266,266;    # Put '16' in index 266, for arithmetic later
+
+
+# Generate required printable characters
+
+267,266;    # Put ASCII 'a' (97) at index 267
+267,267;
+267,267;
+267,266;
+267,266;
+267,262;
+268,267;    # Put ASCII 'c' (99) at index 268
+268,263;
+269,268;    # Put ASCII 'e' (101) at index 269
+269,263;
+270,269;    # Put ASCII 'l' (108) at index 270
+270,264;
+270,263;
+270,262;
+271,270;    # Put ASCII 'o' (111) at index 271
+271,263;
+271,262;
+272,271;    # Put ASCII 'p' (112) at index 272
+272,262;
+273,272;    # Put ASCII 'r' (114) at index 273
+273,263;
+274,273;    # Put ASCII 's' (115) at index 274
+274,262;
+275,274;    # Put ASCII 'u' (117) at index 275
+275,263;
+276,275;    # Put ASCII 'w' (119) at index 276
+276,263;
+277,265;    # Put newline at index 277
+277,263;
+
+# Fill indices 65 through 90 with a value of '1'
+
+65,262;
+66,262;
+67,262;
+68,262;
+69,262;
+70,262;
+71,262;
+72,262;
+73,262;
+74,262;
+75,262;
+76,262;
+77,262;
+78,262;
+79,262;
+80,262;
+81,262;
+82,262;
+83,262;
+84,262;
+85,262;
+86,262;
+87,262;
+88,262;
+89,262;
+90,262;
+
+278,257;    # Read one character from stdin, into index 278
+260,278;    # Copy read character into data pointer config. register
+260,261;    # Read result into data pointer config. register (1 = upper, 0 = lower)
+
+0,264;      # Put jump value for lowercase in index 0
+0,263;
+0,262;
+            # (index 1 has jump value for uppercase, which is '0')
+
+2,264;      # Put end jump value (6 ops) in index 2
+2,263;
+
+258,261;    # jumps ahead 0 (if uppercase) or 7 (if lowercase)
+
+256,275;    # Print 'u'
+256,272;    # Print 'p'
+256,272;    # Print 'p'
+256,269;    # Print 'e'
+256,273;    # Print 'r'
+
+258,2;      # Jump ahead 6 operations
+
+256,270;    # Print 'l'
+256,271;    # Print 'o'
+256,276;    # Print 'w'
+256,269;    # Print 'e'
+256,273;    # Print 'r'
+
+256,268;    # Print 'c'
+256,267;    # Print 'a'
+256,274;    # Print 's'
+256,269;    # Print 'e'
+256,277;    # Print '\n'

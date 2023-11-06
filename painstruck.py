@@ -2,7 +2,7 @@ import sys
 import os
 
 
-DEFAULT_TAPE_SIZE = 300000
+DEFAULT_TAPE_SIZE = 100000
 MIN_TAPE_SIZE = 262
 
 def parse(filename, tape_size=DEFAULT_TAPE_SIZE):
@@ -103,8 +103,9 @@ def execute(ops, tape_size=DEFAULT_TAPE_SIZE):
 
                 continue # Skip instruction pointer += 1
         elif dest == 261:
-            dest_index = tape[260]
-            tape[dest_index] = (tape[dest_index] + src_val) % 256
+            tape[tape[260]] = (tape[tape[260]] + src_val) % 256
+        elif dest == 260:
+            tape[dest] = src_val
         else:
             tape[dest] = (tape[dest] + src_val) % 256
 
