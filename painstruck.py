@@ -5,6 +5,17 @@ import os
 DEFAULT_TAPE_SIZE = 100000
 MIN_TAPE_SIZE = 262
 
+def _parse_array_index(tape_size, field):
+    try:
+        ret = int(field)
+    except ValueError:
+        raise ValueError(f"Invalid array index '{fields[0]}' in {filename} (line {line}, column {column})")
+
+    if (ret < -4) or (ret > tape_size):
+        raise ValueError(f"Invalid array index '{dest}' in {filename} (line {line}, column {column})")
+
+    return ret
+
 def parse(filename, tape_size=DEFAULT_TAPE_SIZE):
     if tape_size < MIN_TAPE_SIZE:
         raise ValueError(f"Tape size must be at least {MIN_TAPE_SIZE} bytes")
@@ -40,21 +51,8 @@ def parse(filename, tape_size=DEFAULT_TAPE_SIZE):
                 if len(fields) != 2:
                     raise ValueError(f"Invalid operation '{buf}' in {filename} (line {line}, column {column})")
 
-                try:
-                    dest = int(fields[0])
-                except ValueError:
-                    raise ValueError(f"Invalid array index '{fields[0]}' in {filename} (line {line}, column {column})")
-
-                try:
-                    src = int(fields[1])
-                except ValueError:
-                    raise ValueError(f"Invalid array index '{fields[1]}' in {filename} (line {line}, column {column})")
-
-                if (dest < 0) or (dest > tape_size):
-                    raise ValueError(f"Invalid array index '{dest}' in {filename} (line {line}, column {column})")
-
-                if (src < 0) or (src > tape_size):
-                    raise ValueError(f"Invalid array index '{src}' in {filename} (line {line}, column {column})")
+                dest = _parse_array_index(tape_size, fields[0].strip())
+                src = _parse_array_index(tape_size, fields[1].strip())
 
                 buf = ""
                 ret.append([dest, src])
