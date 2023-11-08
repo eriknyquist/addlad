@@ -13,46 +13,47 @@ and finally a semicolon:
 
 .. code::
 
-    6,7;   # Read value from index 7, and add to value stored in index 6
-    6,8;   # Read value from index 8, and add to value stored in index 6
+    6, 7;   # Read from array index 7, and add to value stored in index 6
+    6, 8;   # Read from array index 8, and add to value stored in index 6
+
+Enclosing an array index with square brackets ``[]`` will cause the value at that
+array index to be used as the array index (i.e. a pointer to another array index):
+
+.. code::
+
+    6, [7]; # Read from array index stored at array index 7, and add to value stored in index 6
 
 Practical details
 =================
 
 In order to make "normal" programming activities possible with only a single operation,
-6 specific array indices (256 through 261) are reserved for special purposes, and are
+4 specific negative array indices (-1 through -4) are reserved for special purposes, and are
 referred to as "registers":
 
-* **array index 256: Output register** Using index 0 as the destination index will write
-  the value at the source index to stdout. Using index 0 as the source index will result
-  in no change to the destination index.
+* **array index -1: Output register** Using index -1 as the destination index will write
+  the value at the source index to stdout. **Using index -1 as the source index will add
+  1 to the value stored in the destination index. This is the only way you can change
+  any initial value in the array from 0 to 1, and most programs will start by adding array
+  index -1 to some other array index**.
 
-* **array index 257: Input register** Using index 1 as the source index will read
+* **array index -2: Input register** Using index -2 as the source index will read
   1 character from stdin, and then write the read value to the destination index.
-  Using index 1 as the destination index will have no effect.
+  Using index -2 as the destination index will have no effect.
 
-* **array index 258: Instruction pointer increment register** Using index 2 as the
+* **array index -3: Instruction pointer increment register** Using index -3 as the
   destination index will add the value at the source index to the current instruction
   pointer value. If the value at the source index is zero, then the instruction pointer
-  will not be changed and execution will continue normally. Using index 2 as the source
+  will not be changed and execution will continue normally. Using index -3 as the source
   index will result in no change to the destination index.
 
-* **array index 259: Instruction pointer decrement register** Using index 3 as the
+* **array index -4: Instruction pointer decrement register** Using index -4 as the
   destination index will subtract the value at the source index from the current
   instruction pointer value. If the value at the source index is zero, then the
   instruction pointer will not be changed and execution will continue normally. Using
-  index 3 as the source index will result in no change to the destination index.
+  index -4 as the source index will result in no change to the destination index.
 
-* **array_index 260: Data pointer configuration register** Using index 4 as the destination
-  index will read the value at the source index and use it as the array index for
-  all subsequent **Pointer access register (index 5)** access. Using index 4 as the
-  source register will add the last written value to the value stored at the source index.
-
-* **array_index 261: Data pointer access register** Using index 5 as the destination
-  index will cause the last value written to the **Pointer configuration register (index 4)**
-  to be used as the destination index instead. Using index 5 as the source index will
-  cause the last value written to the **Pointer configuration register (index 4)**
-  to be used as the source index instead.
+NOTE: None of the register can be used with pointer syntax (e.g. ``[-1]``), and this
+will be a parsing failure.
 
 In addition to the registers, there are some extra details needed in order to write
 working ``PainStruck`` programs:

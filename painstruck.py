@@ -5,7 +5,13 @@ import os
 DEFAULT_TAPE_SIZE = 100000
 MIN_TAPE_SIZE = 262
 
-def _parse_array_index(tape_size, field):
+def _parse_array_index(tape_size, field, line, column):
+    is_pointer = False
+
+    if field.startswith('[') and field.endswith(']'):
+        is_pointer = True
+        field = field.strip('[]')
+
     try:
         ret = int(field)
     except ValueError:
@@ -14,7 +20,10 @@ def _parse_array_index(tape_size, field):
     if (ret < -4) or (ret > tape_size):
         raise ValueError(f"Invalid array index '{dest}' in {filename} (line {line}, column {column})")
 
-    return ret
+    if (ret < 0) and is_pointer:
+        raise ValueError(f"Registers cannot be used with pointer syntax: '{field}' (line {line}, column {column})")
+
+    return ret, is_pointer
 
 def parse(filename, tape_size=DEFAULT_TAPE_SIZE):
     if tape_size < MIN_TAPE_SIZE:
@@ -51,14 +60,14 @@ def parse(filename, tape_size=DEFAULT_TAPE_SIZE):
                 if len(fields) != 2:
                     raise ValueError(f"Invalid operation '{buf}' in {filename} (line {line}, column {column})")
 
-                dest = _parse_array_index(tape_size, fields[0].strip())
-                src = _parse_array_index(tape_size, fields[1].strip())
+                dest, dest_is_ptr = _parse_array_index(tape_size, fields[0].strip(), line, column)
+                src, src_is_ptr = _parse_array_index(tape_size, fields[1].strip(), line, column)
 
                 buf = ""
-                ret.append([dest, src])
+                ret.append([dest, dest_is_ptr, src, src_is_ptr])
 
             else:
-                if char.isdigit() or (char in ",;"):
+                if char.isdigit() or (char in "[]-,;"):
                     buf += char
                 else:
                     raise ValueError(f"Invalid character '{char}' in {filename} (line {line}, column {column})")
@@ -69,41 +78,41 @@ def execute(ops, tape_size=DEFAULT_TAPE_SIZE):
     if tape_size < MIN_TAPE_SIZE:
         raise ValueError(f"Tape size must be at least {MIN_TAPE_SIZE} bytes")
 
-    tape = bytearray(tape_size)
-    tape[262] = 1
+    tape = bytearray(tape_size + 4)
+    tape[-1] = 1
     index = 0
 
     while index < len(ops):
         dest = ops[index][0]
-        src = ops[index][1]
+        dest_is_ptr = ops[index][1]
+        src = ops[index][2]
+        src_is_ptr = ops[index][3]
 
         # First, obtain value from src
-        if src == 257:
+        if src == -2:
             src_val = ord(os.read(0, 1))
-        elif src == 261: # Read
-            src_val = tape[tape[260]]
+        elif src_is_ptr: # Read pointer
+            src_val = tape[tape[src]]
         else:
             src_val = tape[src]
 
         # Now, handle writing to dest
-        if dest == 256: # Write
+        if dest == -1: # Write
             sys.stdout.write(chr(src_val))
             sys.stdout.flush()
-        elif dest == 258: # Increment instruction pointer
+        elif dest == -3: # Increment instruction pointer
             if src_val > 0:
                 index = (index + src_val) % len(ops)
                 continue # Skip instruction pointer += 1
-        elif dest == 259: # Decrement instruction pointer
+        elif dest == -4: # Decrement instruction pointer
             if src_val > 0:
                 index -= src_val
                 if index < 0:
                     index = len(ops) + index
 
                 continue # Skip instruction pointer += 1
-        elif dest == 261:
-            tape[tape[260]] = (tape[tape[260]] + src_val) % 256
-        elif dest == 260:
-            tape[dest] = src_val
+        elif dest_is_ptr: # Write pointer
+            tape[tape[dest]] = (tape[tape[dest]] + src_val) % 256
         else:
             tape[dest] = (tape[dest] + src_val) % 256
 

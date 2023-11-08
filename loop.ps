@@ -1,4 +1,4 @@
-263,262;    # Index 262 contains '1', copy it to index 263
+263,-1;     # Add '1' it to index 263
 263,263;    # Put '2' in index 263, for arithmetic later
 264,263;
 264,264;    # Put '4' in index 264, for arithmetic later
@@ -16,37 +16,37 @@
 30,265;
 30,264;
 21,30;      # Index 21, 'e' character
-21,262;
+21,-1;
 22,21;      # Index 22, first 'l' character
 22,264;
 22,263;
-22,262;
+22,-1;
 23,22;      # Index 23, second 'l' character
 29,23;      # Index 29, last 'l' character
 24,29;      # Index 24, first 'o' character
 24,263;
-24,262;
+24,-1;
 27,24;      # Index 27, last 'o' character
 28,27;      # Index 28, 'r' character
 28,263;
-28,262;
+28,-1;
 26,28;      # Index 26, 'w' character
 26,264;
-26,262;
+26,-1;
 31,265;     # Index 31, newline character
 31,263;
 32,265;     # Calculate jump value for looping
 32,264;
-256,20;     # Print 'H'
-256,21;     # Print 'e'
-256,22;     # Print 'l'
-256,23;     # Print 'l'
-256,24;     # Print 'o'
-256,25;     # Print ' '
-256,26;     # Print 'w'
-256,27;     # Print 'o'
-256,28;     # Print 'r'
-256,29;     # Print 'l'
-256,30;     # Print 'd'
-256,31;     # Print '\n'
-259,32;     # Write value to jump register (jumps to start of printing code)
+-1,20;      # Print 'H'
+-1,21;      # Print 'e'
+-1,22;      # Print 'l'
+-1,23;      # Print 'l'
+-1,24;      # Print 'o'
+-1,25;      # Print ' '
+-1,26;      # Print 'w'
+-1,27;      # Print 'o'
+-1,28;      # Print 'r'
+-1,29;      # Print 'l'
+-1,30;      # Print 'd'
+-1,31;      # Print '\n'
+-4,32;      # Write value to decrement register (jumps to start of printing code)
