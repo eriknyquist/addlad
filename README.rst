@@ -146,12 +146,10 @@ But if we take some inspiration from Stephen Dolan's
 and Chris Domas' `MovFuscator <https://github.com/xoreaxeaxeax/movfuscator>`_ project, we
 can do some interesting things.
 
-This section will show you how to create an ``AddLad`` program that reads 1 byte from
+This section shows how to create an ``AddLad`` program that reads 1 byte from
 stdin, and prints ``uppercase`` if the read byte is an ASCII uppercase letter,
-and prints ``lowercase`` otherwise. This example program is available at ``examples/condition.ps``
-in the Github repo (NOTE: boring things like generating printable characters can be
-seen in the example programs. This section will only focus on the interesting part,
-which is checking whether the input character is in range).
+and prints ``lowercase`` otherwise. The full example program is available
+`in the Github repo <https://github.com/eriknyquist/addlad/blob/master/examples/condition.ps>`_
 
 1. Fill array indices 65 through 90 (ASCII 'A' through 'Z') with a value of 1:
 
