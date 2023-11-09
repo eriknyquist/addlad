@@ -5,6 +5,7 @@ import os
 DEFAULT_TAPE_SIZE = 100000
 MIN_TAPE_SIZE = 262
 
+
 def _parse_array_index(tape_size, field, line, column):
     is_pointer = False
 
@@ -24,6 +25,7 @@ def _parse_array_index(tape_size, field, line, column):
         raise ValueError(f"Registers cannot be used with pointer syntax: '{field}' (line {line}, column {column})")
 
     return ret, is_pointer
+
 
 def parse(filename, tape_size=DEFAULT_TAPE_SIZE):
     if tape_size < MIN_TAPE_SIZE:
@@ -73,6 +75,7 @@ def parse(filename, tape_size=DEFAULT_TAPE_SIZE):
                     raise ValueError(f"Invalid character '{char}' in {filename} (line {line}, column {column})")
 
     return ret
+
 
 def execute(ops, tape_size=DEFAULT_TAPE_SIZE):
     if tape_size < MIN_TAPE_SIZE:

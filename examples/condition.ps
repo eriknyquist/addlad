@@ -7,7 +7,6 @@
 266,265;
 266,266;    # Put '16' in index 266, for arithmetic later
 
-
 # Generate required printable characters
 
 267,266;    # Put ASCII 'a' (97) at index 267
@@ -40,8 +39,7 @@
 277,265;    # Put newline at index 277
 277,263;
 
-# Fill indices 65 through 90 with a value of '1'
-
+# Fill indices 65 through 90 (ASCII 'A' through 'Z') with a value of '1'
 65,-1;
 66,-1;
 67,-1;
@@ -70,13 +68,12 @@
 90,-1;
 
 260,-2;     # Read one character from stdin, into index 260
-261,[260];  # Read result into index 261 (1 = upper, 0 = lower)
+261,[260];  # Read result into index 261 (1 = uppercase, 0 = lowercase)
 
-0,264;      # Put jump value for lowercase in index 0
+0,264;      # Put jump value for lowercase (7 ops) into index 0
 0,263;
 0,-1;
             # (index 1 has jump value for uppercase, which is '0')
-
 2,264;      # Put end jump value (6 ops) in index 2
 2,263;
 
