@@ -1,3 +1,6 @@
+__version__ = "1.0.0"
+
+
 import sys
 import os
 
@@ -7,6 +10,11 @@ MIN_TAPE_SIZE = 262
 
 
 def _parse_array_index(tape_size, field, line, column):
+    """
+    Parse a single operand to an AddLad instruction. Return a tuple of (num, is_ptr)
+    where 'num' is the array index as an int, and 'is_ptr' will be True if the array
+    index should be interpreted as a pointer to another array index
+    """
     is_pointer = False
 
     if field.startswith('[') and field.endswith(']'):
@@ -28,6 +36,17 @@ def _parse_array_index(tape_size, field, line, column):
 
 
 def parse(filename, tape_size=DEFAULT_TAPE_SIZE):
+    """
+    Read an AddLad program from a file and return a list of tuples of the form
+    (dest, dest_is_ptr, src, src_is_ptr), where
+
+    * 'dest' is the destination index as an int
+    * 'dest_is_ptr' will be True if 'dest' should be interpreted as a pointer
+       to another array index
+    * 'src' is the source index as an int
+    * 'src_is_ptr' will be True if 'src' should be interpreted as a pointer to
+      another array index
+    """
     if tape_size < MIN_TAPE_SIZE:
         raise ValueError(f"Tape size must be at least {MIN_TAPE_SIZE} bytes")
 
@@ -78,6 +97,9 @@ def parse(filename, tape_size=DEFAULT_TAPE_SIZE):
 
 
 def execute(ops, tape_size=DEFAULT_TAPE_SIZE):
+    """
+    Execute the operations returned by addlad.parse
+    """
     if tape_size < MIN_TAPE_SIZE:
         raise ValueError(f"Tape size must be at least {MIN_TAPE_SIZE} bytes")
 
@@ -120,7 +142,3 @@ def execute(ops, tape_size=DEFAULT_TAPE_SIZE):
             tape[dest] = (tape[dest] + src_val) % 256
 
         index += 1
-
-ops = parse(sys.argv[1])
-execute(ops)
-
