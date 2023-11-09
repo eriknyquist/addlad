@@ -17,8 +17,8 @@ def main():
         print(f"Can't access file '{args.source_file}'")
         return -1
 
-    ops = parse(args.source_file)
-    execute(ops, tape_size=args.tape_size)
+    ops = parse(args.source_file, args.tape_size)
+    execute(ops, args.tape_size)
 
 if __name__ == "__main__":
     sys.exit(main())
