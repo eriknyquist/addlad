@@ -1,13 +1,16 @@
+.. contents:: **Table of Contents**
+
 AddLad - an esoteric programming language
 -----------------------------------------
 
-``AddLad`` is an esoteric programming language inspired partially by `Brainf**k <https://en.wikipedia.org/wiki/Brainfuck>`_
+``AddLad`` is an esoteric programming language that emulates a One-Instruction-Set-Computer
+(OISC) with transport-triggered I/O, inspired partially by `Brainf**k <https://en.wikipedia.org/wiki/Brainfuck>`_
 and partially by Chris Domas' `movfuscator <https://github.com/xoreaxeaxeax/movfuscator>`_.
 
 ``AddLad`` programs operate on a "memory tape", a fixed-size array of 8-bit unsigned integers.
 There is only a single operation available in ``AddLad``, which reads a value from one array
 index (the source index), and adds it to the value stored in another array index (the destination
-index). That's It. A single operation consists of an integer (the destination array index, where the
+index). A single operation consists of an integer (the destination array index, where the
 result will go), followed by a comma, followed by another integer (the source array index),
 and finally a semicolon:
 
@@ -27,7 +30,7 @@ Registers
 =========
 
 In order to facilitate some of the features that programmers are accustomed to
-(specifically input, output, modifying the instruction pointer, and non-zero values), 4
+(specifically: input, output, modifying the instruction pointer, and non-zero values), 4
 specific negative array indices (-1 through -4) are reserved for special purposes,
 and are referred to as "registers":
 
@@ -73,8 +76,33 @@ Additional technical specifications
 
 * All whitespace is ignored. Single-line comments are available with the ``#`` character.
 
+Install the interpreter
+-----------------------
+
+Install with ``pip``:
+
+.. code::
+
+    pip install addlad
+
+Using the interpreter
+---------------------
+
+To run the AddLad interpreter, use the ``addlad`` command and pass your AddLad source
+file as an argument:
+
+.. code::
+
+    addlad my_addlad_code.ps
+
+Practical examples
+------------------
+
+This section contains some example AddLad programs, and showcases a couple of
+interesting ways that standard programming constructs can be expressed with AddLad.
+
 "Hello world" in AddLad
-------------------------
+=======================
 
 .. code::
 
@@ -130,7 +158,7 @@ Additional technical specifications
 
 
 How do I write an "if" statement with AddLad?
----------------------------------------------
+=============================================
 
 It may seem like ``AddLad`` isn't capable of constructs like this:
 
@@ -151,7 +179,7 @@ stdin, and prints ``uppercase`` if the read byte is an ASCII uppercase letter,
 and prints ``lowercase`` otherwise. The full example program is available
 `in the Github repo <https://github.com/eriknyquist/addlad/blob/master/examples/condition.ps>`_
 
-1. Fill array indices 65 through 90 (ASCII 'A' through 'Z') with a value of 1:
+1. Change the values stored at array indices 65 through 90 (ASCII 'A' through 'Z') from 0 to 1:
 
    .. code::
 
@@ -183,32 +211,33 @@ and prints ``lowercase`` otherwise. The full example program is available
         90,-1;
 
    It's important that all other array indices in the 0-255 range remain at their
-   initial default value of 0. So array indices 0-64 should hold a value of 0, array
+   initial default value of 0. After this step, array indices 0-64 should hold a value of 0, array
    indices 65-90 should hold a value of 1, and finally array indices 91-255 should hold
    a value of 0. You'll see why in the following steps.
 
-2. Read 1 byte from stdin:
+2. Read 1 byte from stdin, into array index 260:
 
    .. code::
 
        260,-2;
 
-3. Interpret the byte read from stdin as an array index, and read the value
-   stored at that array index:
+3. Interpret the byte read from stdin as an array index, and add the value
+   stored in that array index to the value stored in array index 261:
 
    .. code::
 
        261,[260];
 
-   If the read value is 1, then we know that the byte read from stdin is an uppercase
-   letter, since it's within the range of array indices that we set to a value of 1
-   in step #1.
+   After this step, if the value stored in array index 261 is 1, then we know that
+   the byte read from stdin is an uppercase letter, since it's within the range of
+   array indices that we set to a value of 1 in step #1.
 
-   If the read value is 0, then we know that the byte read from stdin is *not* an
-   uppercase letter, since it's outside the range of array indices that we set to a value
-   of 1 in step #1, and those array indices will still be at their default value of 0.
+   If the value stord in array index 261 is 0, then we know that the byte read from
+   stdin is *not* an uppercase letter, since it's outside the range of array indices
+   that we set to a value of 1 in step #1, and those array indices will still be at
+   their default value of 0.
 
 4. You can now use the value of "0" or "1" obatined in step #3 to (for example) switch
-   between different array indices which contain different instruction pointer decrement
+   between different array indices which contain different instruction pointer increment
    values. This is how the ``examples/condition.ps`` program decides which characters to
    print.
