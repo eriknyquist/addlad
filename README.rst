@@ -237,7 +237,7 @@ and prints ``lowercase`` otherwise. The full example program is available
    that we set to a value of 1 in step #1, and those array indices will still be at
    their default value of 0.
 
-4. You can now use the value of "0" or "1" obatined in step #3 to (for example) switch
+4. You can now use the value of "0" or "1" obtained in step #3 to (for example) switch
    between different array indices which contain different instruction pointer increment
    values. This is how the ``examples/condition.ps`` program decides which characters to
    print.
